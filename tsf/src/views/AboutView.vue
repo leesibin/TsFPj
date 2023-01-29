@@ -1,34 +1,31 @@
 <template>
-  <div>내페이지가 맞습니까?</div>
-  <img id="user_image" src="#" alt="" />
-  <input
-    accept=".png"
-    type="file"
-    id="user_profile_img"
-    on-change="PreviewImage()"
-  />
+  <h2>이건 양형님에게 잘 보일 기회야</h2>
+  <input @change="upload" type="file" id="file" class="inputfile"  accept ="image/* " />
+  <br>
+    <img v-bind:src="imageUrl">
 </template>
 
 <script>
-export default {
-  name: "app",
-  data() {
-    return {};
+export default{
+  name:'app',
+data() {
+  return{
+  imageUrl : ''
+  }
   },
-  methods: {
-    PreviewImage() {
-      var preview = new FileReader();
-      preview.onload = function (e) {
-        // img id 값
-        document.getElementById("user_image").src = e.target.result;
-      };
-      // input id 값
-      preview.readAsDataURL(
-        document.getElementById("user_profile_img").files[0]
-      );
-    },
-  },
-};
+  methods:{
+    upload(e) {
+
+let imageFile = e.target.files; // 업로드한 파일의 데이터가
+console.log(imageFile[0]); // 업로드한 파일의 데이터가 확인
+let url = URL.createObjectURL(imageFile[0]); // 파일의 필요한 데이터만을 url 변수에 넣음
+console.log(url); // 확인
+this.imageUrl = url; // 미리 작성해둔 imageUrl : ' ' 변수에 가지고있는 경로데이터를 넣음
+
+},
+  }
+}
 </script>
 
-<style></style>
+<style>
+</style>

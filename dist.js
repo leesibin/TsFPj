@@ -14,15 +14,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/about", function (req, res) {
-  const A = req.body.imageUrl
   const main = async () => {
     const _data = {
-      이미지base64 : A,
+      url: req.body.imageUrl
     };
 
     const new_photo = new Photo(_data);
     const t = await new_photo.save();
     console.log(t);
+    console.log(_data)
   };
   main();
 });

@@ -1,61 +1,70 @@
 <!-- https://velog.io/@hgoguma_124/Vue.js-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%97%86%EC%9D%B4-Drag-Drop-%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0 -->
 <template>
-  <div class="container">
-    <div
-      class="file-upload-container"
-      @dragenter="onDragenter"
-      @dragover="onDragover"
-      @dragleave="onDragleave"
-      @drop="onDrop"
-      @click="onClick"
-    >
-      <div class="file-upload" :class="isDragged ? 'dragged' : ''">
-        사진이나 이미지 파일을 드래그 & 드랍
-      </div>
-    </div>
-    <!-- 파일 업로드 -->
+  <form action="">
     <input
+      @change="upload"
       type="file"
-      ref="fileInput"
-      class="file-upload-input"
-      @change="onFileChange"
-      multiple
+      id="file"
+      class="inputfile"
+      accept="image/* "
     />
-    <!-- 업로드된 리스트 -->
-    <div class="file-upload-list">
+    <div class="container">
       <div
-        class="file-upload-list__item"
-        v-for="(file, index) in fileList"
-        :key="index"
+        class="file-upload-container"
+        @dragenter="onDragenter"
+        @dragover="onDragover"
+        @dragleave="onDragleave"
+        @drop="onDrop"
+        @click="onClick"
       >
-        <div class="file-upload-list__item__data">
-          <img
-            class="file-upload-list__item__data-thumbnail"
-            v-bind:id="file.name"
-            :src="file.src"
-          />
+        <div class="file-upload" :class="isDragged ? 'dragged' : ''">
+          사진이나 이미지 파일을 드래그 & 드랍
+        </div>
+      </div>
+      <!-- 파일 업로드 -->
+      <input
+        type="file"
+        ref="fileInput"
+        class="file-upload-input"
+        @change="onFileChange"
+        multiple
+      />
+      <!-- 업로드된 리스트 -->
+      <div class="file-upload-list">
+        <div
+          class="file-upload-list__item"
+          v-for="(file, index) in fileList"
+          :key="index"
+        >
+          <div class="file-upload-list__item__data">
+            <img
+              class="file-upload-list__item__data-thumbnail"
+              v-bind:id="file.name"
+              :src="file.src"
+            />
+            <div
+              class="file-upload-list__item__data-name"
+              v-bind:id="0 + file.name"
+            >
+              <!-- {{ file.name }} -->
+            </div>
+          </div>
           <div
-            class="file-upload-list__item__data-name"
-            v-bind:id="0 + file.name"
+            class="file-upload-list__item__btn-remove"
+            @click="mobileNet(file.name)"
           >
-            <!-- {{ file.name }} -->
+            분석
+          </div>
+          <div
+            class="file-upload-list__item__btn-remove"
+            @click="handleRemove(index)"
+          >
+            삭제
           </div>
         </div>
-        <div
-          class="file-upload-list__item__btn-remove"
-          @click="mobileNet(file.name)"
-        >
-          분석
-        </div>
-        <div
-          class="file-upload-list__item__btn-remove"
-          @click="handleRemove(index)"
-        >
-          삭제
-        </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -94,7 +103,7 @@ export default {
       const files = event.dataTransfer.files;
       this.addFiles(files);
       axios({
-        url: "http://localhost:3000/",
+        url: "http://localhost:3000/about",
         method: "POST", // 전송방식을 post로 지정
         data: {
           imageUrl: this.imageUrl,

@@ -13,8 +13,7 @@ app.use(logger("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/about", function (req, res) {
-  console.log("받았냐?");
+app.post("/prediction", function (req, res) {
   const A = req.body.imageUrl;
   const main = async () => {
     const _data = {

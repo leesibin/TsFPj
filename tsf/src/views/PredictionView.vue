@@ -1,13 +1,13 @@
 <!-- https://velog.io/@hgoguma_124/Vue.js-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%97%86%EC%9D%B4-Drag-Drop-%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0 -->
 <template>
   <form action="">
-    <input
+    <!-- <input
       @change="upload"
       type="file"
       id="file"
       class="inputfile"
       accept="image/* "
-    />
+    /> -->
     <div class="container">
       <div
         class="file-upload-container"
@@ -76,8 +76,6 @@ export default {
     return {
       fileList: [],
       PredictionsList: [],
-      tfjs: "",
-      imageUrl: "good",
     };
   },
   methods: {
@@ -102,15 +100,6 @@ export default {
       this.isDragged = false;
       const files = event.dataTransfer.files;
       this.addFiles(files);
-      axios({
-        url: "http://localhost:3000/about",
-        method: "POST", // 전송방식을 post로 지정
-        data: {
-          imageUrl: this.imageUrl,
-        },
-      }).then((res) => {
-        alert(res.data.message);
-      });
     },
     onFileChange(event) {
       const files = event.target.files;
@@ -122,6 +111,15 @@ export default {
         files[i].src = src;
         console.log(files[i]);
         this.fileList.push(files[i]);
+        axios({
+          url: "http://localhost:3000/prediction",
+          method: "POST", // 전송방식을 post로 지정
+          data: {
+            imageUrl: files[i].src,
+          },
+        }).then((res) => {
+          alert(res.data.message);
+        });
       }
     },
     // FileReader를 통해 파일을 읽어 thumbnail 영역의 src 값으로 셋팅
@@ -167,23 +165,23 @@ export default {
         });
       });
     },
-    upload(e) {
-      let imageFile = e.target.files; // 업로드한 파일의 데이터가
-      let url = URL.createObjectURL(imageFile[0]); // 파일의 필요한 데이터만을 url 변수에 넣음
-      this.imageUrl = url; // 미리 작성해둔 imageUrl : ' ' 변수에 가지고있는 경로데이터를 넣음
-      this.imageUrl = window.btoa(url);
-      console.log(imageFile[0]); // 업로드한 파일의 데이터가 확인
-      console.log(url); // 확인
-      axios({
-        url: "http://localhost:3000/about",
-        method: "POST", // 전송방식을 post로 지정
-        data: {
-          imageUrl: this.imageUrl,
-        },
-      }).then((res) => {
-        alert(res.data.message);
-      });
-    },
+    // upload(e) {
+    //   let imageFile = e.target.files; // 업로드한 파일의 데이터가
+    //   let url = URL.createObjectURL(imageFile[0]); // 파일의 필요한 데이터만을 url 변수에 넣음
+    //   this.imageUrl = url; // 미리 작성해둔 imageUrl : ' ' 변수에 가지고있는 경로데이터를 넣음
+    //   this.imageUrl = window.btoa(url);
+    //   console.log(imageFile[0]); // 업로드한 파일의 데이터가 확인
+    //   console.log(url); // 확인
+    //   axios({
+    //     url: "http://127.0.0.1:3000/about",
+    //     method: "POST", // 전송방식을 post로 지정
+    //     data: {
+    //       imageUrl: this.imageUrl,
+    //     },
+    //   }).then((res) => {
+    //     alert(res.data.message);
+    //   });
+    // },
   },
 };
 </script>

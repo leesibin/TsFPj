@@ -4,11 +4,18 @@
   <div>
     <input type="file" @change="readExcel" /><button
       id="modeling-button"
-      @click="modeling()"
+      @click="modeling"
     >
       분석시작
     </button>
   </div>
+  <br />
+  <div>
+    <input type="text" id="input_data" /><button @click="prediction">
+      예측
+    </button>
+  </div>
+  <div id="predict_section"></div>
 </template>
 
 <script>
@@ -63,7 +70,7 @@ export default {
       }; // 최적화의 loss 측정방법종류
       model.compile(compileParam); // 컴파일
       const fitParm = {
-        epochs: 200,
+        epochs: 100,
         // callbacks: {
         //   onEpochEnd: function (epoch, logs) {
         //     console.log("epoch", epoch, logs, "RMSE=>", Math.sqrt(logs.loss));
@@ -77,15 +84,25 @@ export default {
         ),
       };
       // const my = tf.tensor([32]);
-      model.fit(xt, yt, fitParm).then((_) => {
+      model.fit(xt, yt, fitParm).then(() => {
+        console.log(model);
         // model.fit(xt, yt, fitParm) => 데이터와 모델을 통해 모델링을 한다. => 그리고 거기서 나온 식으로
         let result = model.predict(xt);
         // model.predict(my) => 특정 값의 예상값을 뽑아낼 수 있다.
         result.print();
         // model.save("downloads://my-model"); // 모델을 저장
-        model.save("localstorage://my-model-1");
+        model.save("localstorage://my-model-3");
         console.log("모델 저장됨");
       });
+    },
+    async prediction() {
+      const inputData = document.getElementById("input_data");
+      const xt = tf.tensor(Number(inputData.value));
+      const model = await tf.loadLayersModel("localstorage://my-model-3");
+      console.log("모델 로드됨");
+      console.log(model);
+      let newResult = model.predict(xt);
+      newResult.print();
     },
   },
 };

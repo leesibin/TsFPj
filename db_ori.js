@@ -1,11 +1,8 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const USER = "mevn";
-const PWD = 12345;
-const HOST = "127.0.0.1:27017";
-// const USER = process.env.dbtest2id;
-// const PWD = process.env.dbtest2pw;
-// const HOST = process.env.dbhost;
+const USER = process.env.dbid;
+const PWD = process.env.dbpw;
+const HOST = process.env.dbhost;
 const DB = "mdb";
 const mongodbURL = `mongodb://${USER}:${PWD}@${HOST}/${DB}`;
 // mongoose.set('useFindAndModify', false) // 6.0 이후부터는 자동관리

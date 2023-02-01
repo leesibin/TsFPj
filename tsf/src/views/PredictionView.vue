@@ -112,7 +112,7 @@ export default {
         console.log(files[i]);
         this.fileList.push(files[i]);
         axios({
-          url: "http://localhost:3000/prediction",
+          url: "http://127.0.0.1:3000",
           method: "POST", // 전송방식을 post로 지정
           data: {
             imageUrl: files[i].src,

@@ -56,19 +56,25 @@ export default {
       let Y2 = tf.layers.dense({ units: 10, activation: "relu" }).apply(Y1);
       let Z = tf.layers.dense({ units: 1 }).apply(Y2);
       let model = tf.model({ inputs: X, outputs: Z }); // 인아웃풋 저장
+      tfvis.show.modelSummary({ name: "Model Summary" }, model);
       let compileParam = {
         optimizer: tf.train.adam(), // train ??
         loss: tf.losses.meanSquaredError,
       }; // 최적화의 loss 측정방법종류
       model.compile(compileParam); // 컴파일
       const fitParm = {
-        epochs: 3000,
-        callbacks: {
-          onEpochEnd: function (epoch, logs) {
-            console.log("epoch", epoch, logs, "RMSE=>", Math.sqrt(logs.loss));
-            // RMSE는 뭐임? sprt는 뭐임?
-          },
-        },
+        epochs: 200,
+        // callbacks: {
+        //   onEpochEnd: function (epoch, logs) {
+        //     console.log("epoch", epoch, logs, "RMSE=>", Math.sqrt(logs.loss));
+        //     // RMSE는 뭐임? sprt는 뭐임?
+        //   },
+        // },
+        callbacks: tfvis.show.fitCallbacks(
+          { name: "Training Performance" },
+          ["loss", "mse"],
+          { height: 200, callbacks: ["onEpochEnd"] }
+        ),
       };
       // const my = tf.tensor([32]);
       model.fit(xt, yt, fitParm).then((_) => {

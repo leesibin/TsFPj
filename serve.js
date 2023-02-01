@@ -13,16 +13,14 @@ app.use(logger("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/prediction", function (req, res) {
+app.post("/", function (req, res) {
   const A = req.body.imageUrl;
   const main = async () => {
     const _data = {
       이미지base64: A,
     };
-
     const new_photo = new Photo(_data);
     const t = await new_photo.save();
-    console.log(t);
   };
   main();
 });

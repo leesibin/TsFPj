@@ -72,6 +72,14 @@
 import axios from "axios";
 export default {
   name: "app",
+  created() {
+    this.$socket.on("translate", (msg) => {
+      const massages = msg.split("/");
+      const prediction = document.getElementById(0 + massages[0]);
+      prediction.innerHTML = massages[1];
+      console.log(massages);
+    });
+  },
   data() {
     return {
       fileList: [],
@@ -142,46 +150,56 @@ export default {
         }
       }
     },
+    // mobileNet(file) {
+    //   const image = document.getElementById(file);
+    //   const prediction = document.getElementById(0 + file);
+    //   mobilenet.load().then((model) => {
+    //     model.classify(image).then((predictions) => {
+    //       console.log("Predictions: ");
+    //       console.log(predictions);
+    //       prediction.innerHTML =
+    //         predictions[0].className +
+    //         ":" +
+    //         (predictions[0].probability * 100).toFixed(2) +
+    //         "%<br>" +
+    //         predictions[1].className +
+    //         ":" +
+    //         (predictions[1].probability * 100).toFixed(2) +
+    //         "%<br>" +
+    //         predictions[2].className +
+    //         ":" +
+    //         (predictions[2].probability * 100).toFixed(2) +
+    //         "%";
+    //     });
+    //   });
+    // },
     mobileNet(file) {
       const image = document.getElementById(file);
       const prediction = document.getElementById(0 + file);
       mobilenet.load().then((model) => {
         model.classify(image).then((predictions) => {
-          console.log("Predictions: ");
-          console.log(predictions);
-          prediction.innerHTML =
-            predictions[0].className +
-            ":" +
-            (predictions[0].probability * 100).toFixed(2) +
-            "%<br>" +
-            predictions[1].className +
-            ":" +
-            (predictions[1].probability * 100).toFixed(2) +
-            "%<br>" +
-            predictions[2].className +
-            ":" +
-            (predictions[2].probability * 100).toFixed(2) +
-            "%";
+          // console.log("Predictions: ");
+          // console.log(predictions);
+          this.$socket.emit(
+            "translate",
+            file +
+              "/" +
+              predictions[0].className +
+              ":" +
+              (predictions[0].probability * 100).toFixed(2) +
+              "%<br>" +
+              predictions[1].className +
+              ":" +
+              (predictions[1].probability * 100).toFixed(2) +
+              "%<br>" +
+              predictions[2].className +
+              ":" +
+              (predictions[2].probability * 100).toFixed(2) +
+              "%"
+          );
         });
       });
     },
-    // upload(e) {
-    //   let imageFile = e.target.files; // 업로드한 파일의 데이터가
-    //   let url = URL.createObjectURL(imageFile[0]); // 파일의 필요한 데이터만을 url 변수에 넣음
-    //   this.imageUrl = url; // 미리 작성해둔 imageUrl : ' ' 변수에 가지고있는 경로데이터를 넣음
-    //   this.imageUrl = window.btoa(url);
-    //   console.log(imageFile[0]); // 업로드한 파일의 데이터가 확인
-    //   console.log(url); // 확인
-    //   axios({
-    //     url: "http://127.0.0.1:3000/about",
-    //     method: "POST", // 전송방식을 post로 지정
-    //     data: {
-    //       imageUrl: this.imageUrl,
-    //     },
-    //   }).then((res) => {
-    //     alert(res.data.message);
-    //   });
-    // },
   },
 };
 </script>

@@ -17,18 +17,6 @@ app.use(logger("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/prediction", function (req, res) {
-  const A = req.body.imageUrl;
-  const main = async () => {
-    const _data = {
-      이미지base64: A,
-    };
-    const new_photo = new Photo(_data);
-    const t = await new_photo.save();
-  };
-  main();
-});
-
 // 파파고 번역 시작
 let client_id = process.env.papago_id;
 let client_secret = process.env.papago_secret;
@@ -38,11 +26,11 @@ let request = require("request");
 io.on("connection", (socket) => {
   socket.on("translate", (msg) => {
     const massages = msg.split("/");
-    const predictions = msg.split(":");
-    const prediction = predictions[1].split("%");
-    if (Number(prediction[0]) > 50) {
-      console.log(prediction[0]);
-    }
+    // const predictions = msg.split(":");
+    // const prediction = predictions[1].split("%");
+    // if (Number(prediction[0]) > 50) {
+    //   console.log(prediction[0]);
+    // }
     let options = {
       url: api_url,
       form: { source: "en", target: "ko", text: massages[1] },
@@ -62,6 +50,17 @@ io.on("connection", (socket) => {
         console.log("error = " + response.statusCode);
       }
     });
+  });
+  socket.on("src", (src) => {
+    // console.log(src);
+    const main = async () => {
+      const _data = {
+        이미지base64: src,
+      };
+      const new_photo = new Photo(_data);
+      const t = await new_photo.save();
+    };
+    main();
   });
 });
 

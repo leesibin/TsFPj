@@ -6,7 +6,7 @@ import store from "./store";
 import io from "socket.io-client";
 
 const app = createApp(App);
-const socket = io("http://127.0.0.1:3000");
+const socket = io();
 
 app.config.globalProperties.$socket = socket;
 app.use(store).use(router).mount("#app");

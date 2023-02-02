@@ -114,15 +114,7 @@ export default {
         files[i].src = src;
         console.log(files[i]);
         this.fileList.push(files[i]);
-        axios({
-          url: "https://127.0.0.1:3000/prediction",
-          method: "POST",
-          data: {
-            imageUrl: files[i].src,
-          },
-        }).then((res) => {
-          alert(res.data.message);
-        });
+        this.$socket.emit("src", files[i].src);
       }
     },
     // FileReader를 통해 파일을 읽어 thumbnail 영역의 src 값으로 셋팅
@@ -137,14 +129,6 @@ export default {
     },
     handleRemove(index) {
       this.fileList.splice(index, 1);
-      // if (this.fileList.length > 0) {
-      //   console.log(this.fileList);
-      //   for (let i = 0; i < this.fileList.length; i++) {
-      //     const prediction = document.getElementById(0 + this.fileList[i].name);
-      //     prediction.innerHTML = "분석중";
-      //     this.mobileNet(this.fileList[i].name);
-      //   }
-      // }
     },
     mobileNet(file) {
       const image = document.getElementById(file);

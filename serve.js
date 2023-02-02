@@ -17,7 +17,7 @@ app.use(logger("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/", function (req, res) {
+app.post("/prediction", function (req, res) {
   const A = req.body.imageUrl;
   const main = async () => {
     const _data = {

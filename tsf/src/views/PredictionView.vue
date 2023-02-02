@@ -1,13 +1,6 @@
 <!-- https://velog.io/@hgoguma_124/Vue.js-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%97%86%EC%9D%B4-Drag-Drop-%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0 -->
 <template>
   <form action="">
-    <!-- <input
-      @change="upload"
-      type="file"
-      id="file"
-      class="inputfile"
-      accept="image/* "
-    /> -->
     <div class="container">
       <div
         class="file-upload-container"
@@ -77,7 +70,9 @@ export default {
       const massages = msg.split("/");
       const prediction = document.getElementById(0 + massages[0]);
       prediction.innerHTML = massages[1];
-      console.log(massages);
+      // console.log(massages);
+      // const img = document.getElementById(massages[0]);
+      // console.log(img.src);
     });
   },
   data() {
@@ -120,8 +115,8 @@ export default {
         console.log(files[i]);
         this.fileList.push(files[i]);
         axios({
-          url: "http://127.0.0.1:3000",
-          method: "POST", // 전송방식을 post로 지정
+          url: "https://127.0.0.1:3000/prediction",
+          method: "POST",
           data: {
             imageUrl: files[i].src,
           },
@@ -142,44 +137,20 @@ export default {
     },
     handleRemove(index) {
       this.fileList.splice(index, 1);
-      if (this.fileList.length > 0) {
-        for (let i = 0; i < this.fileList.length; i++) {
-          const prediction = document.getElementById(0 + this.fileList[i].name);
-          prediction.innerHTML = "분석중";
-          this.mobileNet(this.fileList[i].name);
-        }
-      }
+      // if (this.fileList.length > 0) {
+      //   console.log(this.fileList);
+      //   for (let i = 0; i < this.fileList.length; i++) {
+      //     const prediction = document.getElementById(0 + this.fileList[i].name);
+      //     prediction.innerHTML = "분석중";
+      //     this.mobileNet(this.fileList[i].name);
+      //   }
+      // }
     },
-    // mobileNet(file) {
-    //   const image = document.getElementById(file);
-    //   const prediction = document.getElementById(0 + file);
-    //   mobilenet.load().then((model) => {
-    //     model.classify(image).then((predictions) => {
-    //       console.log("Predictions: ");
-    //       console.log(predictions);
-    //       prediction.innerHTML =
-    //         predictions[0].className +
-    //         ":" +
-    //         (predictions[0].probability * 100).toFixed(2) +
-    //         "%<br>" +
-    //         predictions[1].className +
-    //         ":" +
-    //         (predictions[1].probability * 100).toFixed(2) +
-    //         "%<br>" +
-    //         predictions[2].className +
-    //         ":" +
-    //         (predictions[2].probability * 100).toFixed(2) +
-    //         "%";
-    //     });
-    //   });
-    // },
     mobileNet(file) {
       const image = document.getElementById(file);
       const prediction = document.getElementById(0 + file);
       mobilenet.load().then((model) => {
         model.classify(image).then((predictions) => {
-          // console.log("Predictions: ");
-          // console.log(predictions);
           this.$socket.emit(
             "translate",
             file +

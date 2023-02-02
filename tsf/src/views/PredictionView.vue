@@ -65,10 +65,15 @@
 export default {
   name: "app",
   created() {
+    // 번역된 prediction을 제자리로 뿌려줌
     this.$socket.on("translate", (msg) => {
+      // 받은 자료의 형태가 "파일이름(=id)/번역된 prediction" 그래서 split("/")으로 스트링을 나눔
       const massages = msg.split("/");
+      // 파일이름으로 된 id를 찾아 번역된 prediction을 삽입
       const prediction = document.getElementById(0 + massages[0]);
       prediction.innerHTML = massages[1];
+
+      // base64 확인 테스트 중..
       // console.log(massages);
       // const img = document.getElementById(massages[0]);
       // console.log(img.src);
@@ -107,13 +112,16 @@ export default {
       const files = event.target.files;
       this.addFiles(files);
     },
+    // 업로드 된 파일 리스트 생성
     async addFiles(files) {
       for (let i = 0; i < files.length; i++) {
         const src = await this.readFiles(files[i]);
         files[i].src = src;
         console.log(files[i]);
+        // files[i] 형태를 확인
         this.fileList.push(files[i]);
         this.$socket.emit("src", files[i].src);
+        // 소켓으로 src 전송
       }
     },
     // FileReader를 통해 파일을 읽어 thumbnail 영역의 src 값으로 셋팅
@@ -129,11 +137,14 @@ export default {
     handleRemove(index) {
       this.fileList.splice(index, 1);
     },
+    // 분석 시작
     mobileNet(file) {
       const image = document.getElementById(file);
-      const prediction = document.getElementById(0 + file);
+      // 이미지가 담긴 img를 불러옴
+      // img로 분석 시작
       mobilenet.load().then((model) => {
         model.classify(image).then((predictions) => {
+          // 번역을 위해 prediction을 소켓으로 전송
           this.$socket.emit(
             "translate",
             file +
@@ -150,6 +161,8 @@ export default {
               ":" +
               (predictions[2].probability * 100).toFixed(2) +
               "%"
+            // 번역된 prediction이 제자리에 뿌려지려면
+            // 보내는 데이터에 id를 특징할 수 있는 내용도 함께 전송
           );
         });
       });
